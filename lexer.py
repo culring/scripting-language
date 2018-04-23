@@ -1,5 +1,5 @@
 from antlr4 import *
-from my_grammarLexer import my_grammarLexer
+from lexer_grammar.my_grammarLexer import my_grammarLexer
 import unittest
 import os
 import sys
