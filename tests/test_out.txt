@@ -1,0 +1,19 @@
+NAME             while            
+LPAR             (                
+NAME             i                
+LESSEQUAL        <=               
+NAME             MAX              
+RPAR             )                
+LBRACE           {                
+NAME             log              
+LPAR             (                
+STRING           "This is a log"  
+RPAR             )                
+SEMI             ;                
+NAME             i                
+EQUAL            =                
+NAME             i                
+PLUS             +                
+NUMBER           1                
+SEMI             ;                
+RBRACE           }                
