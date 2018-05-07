@@ -4,6 +4,8 @@ import unittest
 import os
 import sys
 
+from grammar.my_grammarParser import my_grammarParser
+
 
 def getValueToNameDict(lexer):
     tokensNames = {}
@@ -66,18 +68,24 @@ class LexerTest(unittest.TestCase):
 
 
 def main():
-    if len(sys.argv) < 2:
-        unittest.main()
-    else:
-        stream = FileStream(sys.argv[1])
-        lexer = my_grammarLexer(stream)
-        tokens = lexer.getAllTokens()
-        tokensNames = getValueToNameDict(my_grammarLexer)
-        tokensValues = [(tokensNames[token.type], token.text) for token in tokens]
-        columnWidth = max([max(len(e1), len(e2)) for e1, e2 in tokensValues]) + 2
-        for values in tokensValues:
-            output = ''.join(word.ljust(columnWidth) for word in values)
-            print(output)
+    inputStream = FileStream("test.txt")
+    lexer = my_grammarLexer(inputStream)
+    stream = CommonTokenStream(lexer)
+    parser = my_grammarParser(stream)
+    parser.script()
+
+    # if len(sys.argv) <= 1:
+    #     unittest.main()
+    # else:
+    #     stream = FileStream(sys.argv[1])
+    #     lexer = my_grammarLexer(stream)
+    #     tokens = lexer.getAllTokens()
+    #     tokensNames = getValueToNameDict(my_grammarLexer)
+    #     tokensValues = [(tokensNames[token.type], token.text) for token in tokens]
+    #     columnWidth = max([max(len(e1), len(e2)) for e1, e2 in tokensValues]) + 2
+    #     for values in tokensValues:
+    #         output = ''.join(word.ljust(columnWidth) for word in values)
+    #         print(output)
 
 
 if __name__ == '__main__':

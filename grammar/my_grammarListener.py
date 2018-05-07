@@ -5,9 +5,6 @@ if __name__ is not None and "." in __name__:
 else:
     from my_grammarParser import my_grammarParser
 
-from .sol import *
-
-
 # This class defines a complete listener for a parse tree produced by my_grammarParser.
 class my_grammarListener(ParseTreeListener):
 
