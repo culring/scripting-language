@@ -1,8 +1,16 @@
 from antlr4 import *
-from lexer_grammar.my_grammarLexer import my_grammarLexer
+from grammar.my_grammarLexer import my_grammarLexer
 import unittest
 import os
 import sys
+
+
+def getValueToNameDict(lexer):
+    tokensNames = {}
+    for attr in my_grammarLexer.__dict__.items():
+        if attr[0].isupper() and type(attr[1]) is int:
+            tokensNames[attr[1]] = attr[0]
+    return tokensNames
 
 
 class LexerTest(unittest.TestCase):
@@ -14,7 +22,8 @@ class LexerTest(unittest.TestCase):
         lexer = my_grammarLexer(stream)
         tokens = lexer.getAllTokens()
         os.remove(filename)
-        return [value[0] for value in [(lexer.symbolicNames[token.type], token.text) for token in tokens]]
+        tokensNames = getValueToNameDict(my_grammarLexer)
+        return [tokensNames[token.type] for token in tokens]
 
     def test_isTokenizedCorrectly1(self):
         data = '''
@@ -23,8 +32,9 @@ class LexerTest(unittest.TestCase):
             }
         '''
         expected = [
-            'NAME', 'LPAR', 'NAME', 'LESSEQUAL', 'NUMBER', 'RPAR',
-            'LBRACE', 'NAME', 'EQUAL', 'NUMBER', 'SEMI', 'RBRACE'
+            'T__8', 'LPAR', 'NAME', 'LESSEQUAL', 'NON_NEGATIVE_INTEGER',
+            'RPAR', 'LBRACE', 'NAME', 'EQUAL', 'NON_NEGATIVE_INTEGER',
+            'SEMI', 'RBRACE'
         ]
         symbolicNames = self.getAllSymbolicNames(data)
         self.assertEqual(symbolicNames, expected)
@@ -34,8 +44,8 @@ class LexerTest(unittest.TestCase):
             a = a+3**3;
         '''
         expected = [
-            'NAME', 'EQUAL', 'NAME', 'PLUS', 'NUMBER', 'DOUBLESTAR',
-            'NUMBER', 'SEMI'
+            'NAME', 'EQUAL', 'NAME', 'PLUS', 'NON_NEGATIVE_INTEGER',
+            'DOUBLESTAR', 'NON_NEGATIVE_INTEGER', 'SEMI'
         ]
         symbolicNames = self.getAllSymbolicNames(data)
         self.assertEqual(symbolicNames, expected)
@@ -47,25 +57,28 @@ class LexerTest(unittest.TestCase):
             }
         '''
         expected = [
-            'NAME', 'LPAR', 'NAME', 'DOUBLEEQUAL', 'NAME',
-            'RPAR', 'LBRACE', 'NAME', 'LPAR', 'STRING', 'RPAR',
-            'SEMI', 'RBRACE'
+            'T__10', 'LPAR', 'NAME', 'DOUBLEEQUAL', 'BOOL',
+            'RPAR', 'LBRACE', 'NAME', 'LPAR','STRING',
+            'RPAR', 'SEMI', 'RBRACE'
         ]
         symbolicNames = self.getAllSymbolicNames(data)
         self.assertEqual(symbolicNames, expected)
 
 
 def main():
-    stream = FileStream(sys.argv[1])
-    lexer = my_grammarLexer(stream)
-    tokens = lexer.getAllTokens()
-    tokensValues = [(lexer.symbolicNames[token.type], token.text) for token in tokens]
-    columnWidth = max([max(len(e1), len(e2)) for e1, e2 in tokensValues]) + 2
-    for values in tokensValues:
-        output = ''.join(word.ljust(columnWidth) for word in values)
-        print(output)
+    if len(sys.argv) < 2:
+        unittest.main()
+    else:
+        stream = FileStream(sys.argv[1])
+        lexer = my_grammarLexer(stream)
+        tokens = lexer.getAllTokens()
+        tokensNames = getValueToNameDict(my_grammarLexer)
+        tokensValues = [(tokensNames[token.type], token.text) for token in tokens]
+        columnWidth = max([max(len(e1), len(e2)) for e1, e2 in tokensValues]) + 2
+        for values in tokensValues:
+            output = ''.join(word.ljust(columnWidth) for word in values)
+            print(output)
 
 
 if __name__ == '__main__':
     main()
-    # unittest.main()

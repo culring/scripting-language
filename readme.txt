@@ -1,6 +1,7 @@
-1. Testy jednostkowe w pliku lexer.py.
+1. Uruchomienie testów jednostkowych z pliku lexer.py:
 
-2. Mo¿liwoœæ uruchomienia tokenizera na pliku podanym jako argument wywo³ania programu lexer.py. 
-Przyk³ad:
+> python lexer.py
 
-> python lexer.py /absolute/path/to/tests/input.txt
+2. Uruchomienie testu na zewnêtrznym pliku:
+
+> python lexer.py path/to/tests/input.txt
