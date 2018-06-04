@@ -6,9 +6,7 @@ script
 
 // lists
 basic_list
-    returns [value]
-    : LSQPAR (exprs+=expr COMMA)* (exprs+=expr | COMMA)? RSQPAR
-    {$value = [e.value for e in $exprs]};
+    : LSQPAR (exprs+=expr COMMA)* (exprs+=expr | COMMA)? RSQPAR;
 by_slice_list
     : expr COLON expr COLON expr
     | expr COLON expr;
@@ -34,20 +32,15 @@ comparison
 
 // literal
 number
-    returns [value]
-    : NON_NEGATIVE_INTEGER {$value = int($NON_NEGATIVE_INTEGER.text)}
-    | FLOAT {$value = float($FLOAT.text)};
+    : NON_NEGATIVE_INTEGER
+    | FLOAT;
 
 simple_literal
-    returns [value]
     : STRING
-{$value = str($STRING.text);
-$value = $value[1:-1]}
-    | NON_NEGATIVE_INTEGER {$value = int($NON_NEGATIVE_INTEGER.text)}
-    | number {$value = $number.value}
-    | BOOL {$value = bool($BOOL.text)}
-    | NONE {$value = None}
-    | basic_list {$value = $basic_list.value};
+    | number
+    | BOOL
+    | NONE
+    | basic_list;
 
 // parameter set
 parameter_set_stmt
@@ -73,42 +66,19 @@ parameter_set_suite
 
 // expression
 expr
-    returns [value]
-    @after {
-print($value)
-    }
-    : term {$value = $term.value} (o=(PLUS | MINUS) term
-{if $ctx.o.type == my_grammarParser.PLUS:
-    $value += $term.value
-else:
-    $value -= $term.value} )*;
+    : term ((PLUS | MINUS) term )*;
 term
-    returns [value]
-    : factor {$value = $factor.value} (op=(STAR | SLASH | PERCENT | '//') factor{
-if $ctx.op.type == my_grammarParser.STAR:
-    $value *= $factor.value
-elif $ctx.op.type == my_grammarParser.SLASH:
-    $value /= $factor.value
-elif $ctx.op.type == my_grammarParser.PERCENT:
-    $value %= $factor.value
-elif $ctx.op.text == '//':
-    $value //= $factor.value
-    })*;
+    : factor ((STAR | SLASH | PERCENT | '//') factor)*;
 factor
-    returns [value]
-    : op=(PLUS | MINUS) factor
-    {$value = -$factor.value if $op.type == my_grammarParser.MINUS) else $factor.value}
-    | power {$value = $power.value};
+    : (PLUS | MINUS) factor
+    | power;
 power
-    returns [value]
-    : atom_expr {$value = $atom_expr.value} (DOUBLESTAR factor {$value **= $factor.value})?;
+    : atom_expr (DOUBLESTAR factor)?;
 atom_expr
-    returns [value]
-    : atom trailer* {$value = $atom.value};
+    : atom trailer*;
 atom
-    returns [value]
     : NAME
-    | simple_literal {$value = $simple_literal.value};
+    | simple_literal;
 trailer
     : LPAR arglist? RPAR
     | LSQPAR NON_NEGATIVE_INTEGER RSQPAR
