@@ -23,8 +23,8 @@ class Comparison(Operation):
 
     def execute(self, symbolTables: List[SymbolTable]):
         if hasattr(self, '_comparator'):
-            return self._comparator.compare(self._expr1, self._expr2)
+            return self._comparator.compare(self._expr1.execute(symbolTables), self._expr2.execute(symbolTables))
         elif hasattr(self, '_expr'):
-            return bool(self._expr)
+            return bool(self._expr.execute(symbolTables))
         else:
             raise AttributeError('Comparison cannot execute without proper attributes')
