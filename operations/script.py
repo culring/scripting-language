@@ -5,9 +5,10 @@ from operations.stmt import Stmt
 from operations.symbol_table import SymbolTable
 
 
-class Term(Operation):
-    def __init__(self, stmts: Stmt):
+class Script(Operation):
+    def __init__(self, stmts: Tuple[Stmt, ...] = ()):
         self._stmts = stmts
 
     def execute(self, symbolTables: List[SymbolTable]):
-        pass
+        for stmt in self._stmts:
+            stmt.execute(symbolTables)

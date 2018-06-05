@@ -4,8 +4,19 @@ from operations.symbol_table import SymbolTable
 
 
 class Number(Operation):
-    def __init__(self, value):
-        self._value = value
+    @classmethod
+    def createNonNegativeInteger(cls, string):
+        obj = cls()
+        obj._value = int(string)
+
+        return obj
+
+    @classmethod
+    def createFloat(cls, string):
+        obj = cls()
+        obj._value = float(string)
+
+        return obj
 
     def execute(self, symbolTables: List[SymbolTable]):
-        pass
+        return self._value

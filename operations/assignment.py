@@ -1,4 +1,7 @@
 from typing import List, Tuple
+
+from operations.by_slice_list import BySliceList
+from operations.expr import Expr
 from operations.operation import Operation
 from operations.symbol_table import SymbolTable
 
@@ -21,4 +24,10 @@ class Assignment(Operation):
         return obj
 
     def execute(self, symbolTables: List[SymbolTable]):
-        pass
+        if hasattr(self, '_expr'):
+            value = self._expr.execute(symbolTables)
+        # by slice list
+        else:
+            value = self._bySliceList.execute(symbolTables)
+
+        symbolTables[self._name] = value

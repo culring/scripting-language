@@ -5,6 +5,48 @@ from typing.io import TextIO
 import sys
 
 
+from operations.and_test import AndTest
+from operations.arglist import Arglist
+from operations.argument import Argument
+from operations.assignment import Assignment
+from operations.assignment_stmt import AssignmentStmt
+from operations.assignment_suite import AssignmentSuite
+from operations.atom import Atom
+from operations.atom_expr import AtomExpr
+from operations.basic_list import BasicList
+from operations.by_slice_list import BySliceList
+from operations.comparator import Comparator
+from operations.comparison import Comparison
+from operations.compound_stmt import CompoundStmt
+from operations.context_stmt import ContextStmt
+from operations.expr import Expr
+from operations.factor import Factor
+from operations.for_stmt import ForStmt
+from operations.funcdef_stmt import FuncdefStmt
+from operations.if_stmt import IfStmt
+from operations.import_stmt import ImportStmt
+from operations.not_test import NotTest
+from operations.number import Number
+from operations.operation import Operation
+from operations.or_test import OrTest
+from operations.parameter_set_stmt import ParameterSetStmt
+from operations.parameter_set_suite import ParameterSetSuite
+from operations.power import Power
+from operations.script import Script
+from operations.simple_lambda import SimpleLambda
+from operations.simple_literal import SimpleLiteral
+from operations.simple_stmt import SimpleStmt
+from operations.stmt import Stmt
+from operations.suite import Suite
+from operations.symbol_table import SymbolTable
+from operations.term import Term
+from operations.trailer import Trailer
+from operations.where_assignment import WhereAssignment
+from operations.where_assignment_stmt import WhereAssignmentStmt
+from operations.where_expr import WhereExpr
+from operations.while_stmt import WhileStmt
+
+
 def serializedATN():
     with StringIO() as buf:
         buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\2\60")

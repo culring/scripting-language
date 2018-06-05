@@ -1,7 +1,7 @@
 from typing import List, Tuple
 
-from operations.expr import Expr
 from operations.operation import Operation
+from operations.simple_literal import SimpleLiteral
 from operations.symbol_table import SymbolTable
 
 
@@ -20,13 +20,10 @@ class Argument(Operation):
 
         return obj
 
-    @classmethod
-    def createFromExpr(cls, name: str, expr: Expr) -> 'Argument':
-        obj = cls()
-        obj._name = name
-        obj._expr = expr
-
-        return obj
-
     def execute(self, symbolTables: List[SymbolTable]):
-        pass
+        if hasattr(self, '_simpleLiteral'):
+            return self._simpleLiteral.execute()
+        elif hasattr(self, '_name'):
+            return SymbolTable.find(self._name, symbolTables)[self._name]
+        else:
+            raise AttributeError('Argument cannot execute without proper attributes')

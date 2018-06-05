@@ -1,22 +1,9 @@
-from enum import Enum, auto
+from typing import List
+
+from .exceptions.symbol_not_found_error import SymbolNotFoundError
 
 
 class SymbolTable:
-    class Type(Enum):
-        # values
-        INT = auto()
-        LIST = auto()
-        STRING = auto()
-        FLOAT = auto()
-        BOOL = auto()
-        OBJECT = auto()
-        # values
-
-        # declarations
-        FUNCTION = auto()
-        PARAMETER_SET = auto()
-        # declarations
-
     def __init__(self):
         self._dict = dict()
 
@@ -25,3 +12,11 @@ class SymbolTable:
 
     def __setitem__(self, key, value):
         self._dict[key] = value
+
+    @staticmethod
+    def find(symbol, tables: List['SymbolTable']):
+        for table in tables[::-1]:
+            if symbol in table:
+                return table
+
+        raise SymbolNotFoundError()

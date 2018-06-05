@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List
 
 from operations.basic_list import BasicList
 from operations.number import Number
@@ -17,7 +17,7 @@ class SimpleLiteral(Operation):
     @classmethod
     def createFromNumber(cls, number: Number) -> 'SimpleLiteral':
         obj = cls()
-        obj._number = number
+        obj._operation = number
 
         return obj
 
@@ -38,9 +38,14 @@ class SimpleLiteral(Operation):
     @classmethod
     def createFromBasicList(cls, basicList: BasicList) -> 'SimpleLiteral':
         obj = cls()
-        obj._basicList = basicList
+        obj._operation = basicList
 
         return obj
 
     def execute(self, symbolTables: List[SymbolTable]):
-        pass
+        if hasattr(self, '_value'):
+            return self._value
+        elif hasattr(self, '_operation'):
+            return self._operation.execute(symbolTables)
+        else:
+            raise AttributeError('SimpleLiteral cannot execute without proper attributes')

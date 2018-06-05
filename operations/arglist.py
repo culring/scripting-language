@@ -1,12 +1,13 @@
 from typing import List, Tuple
+
+from operations.argument import Argument
 from operations.operation import Operation
 from operations.symbol_table import SymbolTable
 
 
 class Arglist(Operation):
-    def __init__(self, argument: Argument, rest: Tuple[Argument] = None):
-        self._argument = argument
-        self._rest = rest
+    def __init__(self, arguments: Tuple[Argument, ...] = ()):
+        self._arguments = arguments
 
     def execute(self, symbolTables: List[SymbolTable]):
-        pass
+        return [argument.execute(symbolTables) for argument in self._arguments]

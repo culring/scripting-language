@@ -1,0 +1,1 @@
+java -jar antlr/antlr4.jar -Dlanguage=Python3 my_grammar.g4 2> err.txt

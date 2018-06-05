@@ -1,6 +1,7 @@
 from typing import List, Tuple
 from operations.operation import Operation
 from operations.power import Power
+from operations.simple_literal import SimpleLiteral
 from operations.symbol_table import SymbolTable
 
 
