@@ -21,4 +21,11 @@ class ElseStmt(Operation):
         return obj
 
     def execute(self, symbolTables: List[SymbolTable]):
-        pass
+        if hasattr(self, '_suite'):
+            symbolTables.append(SymbolTable())
+            self._suite.execute(symbolTables)
+            symbolTables.pop()
+        elif hasattr(self, '_ifStmt'):
+            self._ifStmt.execute(symbolTables)
+        else:
+            raise AttributeError('ElseStmt cannot execute without proper attributes')

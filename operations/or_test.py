@@ -10,4 +10,8 @@ class OrTest(Operation):
         self._andTest2 = andTest2
 
     def execute(self, symbolTables: List[SymbolTable]):
-        pass
+        result = self._andTest1.execute(symbolTables)
+        if self._andTest2:
+            result = result and self._andTest2.execute(symbolTables)
+
+        return result

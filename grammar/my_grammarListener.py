@@ -20,6 +20,7 @@ from operations.comparison import Comparison
 from operations.compound_stmt import CompoundStmt
 from operations.context_stmt import ContextStmt
 from operations.expr import Expr
+from operations.else_stmt import ElseStmt
 from operations.factor import Factor
 from operations.for_stmt import ForStmt
 from operations.funcdef_stmt import FuncdefStmt

@@ -10,4 +10,7 @@ class Suite(Operation):
         self._contextStmt = contextStmts
 
     def execute(self, symbolTables: List[SymbolTable]):
-        pass
+        symbolTables.append(SymbolTable())
+        for stmt in self._contextStmt:
+            stmt.execute(symbolTables)
+        symbolTables.pop()

@@ -14,4 +14,13 @@ class IfStmt(Operation):
         self._elseStmt = elseStmt
 
     def execute(self, symbolTables: List[SymbolTable]):
-        pass
+        orTestResult = self._orTest.execute(symbolTables)
+        if orTestResult:
+            symbolTables.append(SymbolTable())
+            self._suite.execute(symbolTables)
+            symbolTables.pop()
+        else:
+            if self._elseStmt:
+                symbolTables.append(SymbolTable())
+                self._elseStmt.execute(symbolTables)
+                symbolTables.pop()

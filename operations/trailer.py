@@ -1,20 +1,20 @@
 from typing import List, Tuple
 
-from operations.arglist import Arglist
 from operations.symbol_table import SymbolTable
 
-class Trailer():
+
+class Trailer:
     @classmethod
-    def createFromArglist(cls, arglist: Arglist = None) -> 'Trailer':
+    def createFromArglist(cls, arglist: 'Arglist' = None) -> 'Trailer':
         obj = cls()
         obj._arglist = arglist
 
         return obj
 
     @classmethod
-    def createFromAccess(cls, integer: int) -> 'Trailer':
+    def createFromAccess(cls, integer: str) -> 'Trailer':
         obj = cls()
-        obj._integer = integer
+        obj._integer = int(integer)
 
         return obj
 
@@ -25,16 +25,16 @@ class Trailer():
 
         return obj
 
-    def execute(self, symbolTables: List[SymbolTable], object):
+    def execute(self, symbolTables: List[SymbolTable], obj):
         if hasattr(self, '_arglist'):
             if self._arglist:
                 arglist = self._arglist.execute(symbolTables)
-                return object(*arglist)
+                return obj(*arglist)
             else:
-                return object()
+                return obj()
         elif hasattr(self, '_integer'):
-            return object[self._integer]
+            return obj[self._integer]
         elif hasattr(self, '_name'):
-            return getattr(object, self._name)
+            return getattr(obj, self._name)
         else:
             raise AttributeError('Trailer cannot execute because of wrong attributes')

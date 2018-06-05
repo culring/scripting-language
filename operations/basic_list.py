@@ -5,8 +5,8 @@ from operations.symbol_table import SymbolTable
 
 
 class BasicList(Operation):
-    def __init__(self, exprs: Tuple['Expr'] = None):
+    def __init__(self, exprs: Tuple['Expr', ...] = None):
         self._exprs = exprs
 
     def execute(self, symbolTables: List[SymbolTable]):
-        pass
+        return [expr.execute(symbolTables) for expr in self._exprs]

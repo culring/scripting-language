@@ -26,4 +26,11 @@ class CompoundStmt(Operation):
         return obj
 
     def execute(self, symbolTables: List[SymbolTable]):
-        pass
+        if hasattr(self, '_forStmt'):
+            pass
+        elif hasattr(self, '_whileStmt'):
+            pass
+        elif hasattr(self, '_ifStmt'):
+            self._ifStmt.execute(symbolTables)
+        else:
+            raise AttributeError('CompoundStmt cannot execute without proper attributes')

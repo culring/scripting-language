@@ -10,4 +10,8 @@ class AndTest(Operation):
         self._notTest2 = notTest2
 
     def execute(self, symbolTables: List[SymbolTable]):
-        pass
+        result = self._notTest1.execute(symbolTables)
+        if self._notTest2:
+            result = result and self._notTest2.execute(symbolTables)
+
+        return result

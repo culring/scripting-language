@@ -7,15 +7,23 @@ from operations.symbol_table import SymbolTable
 class NotTest(Operation):
     @classmethod
     def createFromComparison(cls, comparison: Comparison):
-        pass
+        obj = cls()
+        obj._comparison = comparison
+
+        return obj
 
     @classmethod
     def createFromNotTest(cls, notTest: 'NotTest'):
-        currNotTest = cls()
-        currNotTest._notTest = notTest
-        return currNotTest
+        obj = cls()
+        obj._notTest = notTest
+        return obj
 
     def execute(self, symbolTables: List[SymbolTable]):
-        pass
+        if hasattr(self, '_comparison'):
+            return self._comparison.execute(symbolTables)
+        elif hasattr(self, '_notTest'):
+            return self._notTest.execute(symbolTables)
+        else:
+            raise AttributeError('NotTest cannot execute without proper attributes')
 
 

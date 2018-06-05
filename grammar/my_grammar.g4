@@ -16,6 +16,7 @@ from operations.comparison import Comparison
 from operations.compound_stmt import CompoundStmt
 from operations.context_stmt import ContextStmt
 from operations.expr import Expr
+from operations.else_stmt import ElseStmt
 from operations.factor import Factor
 from operations.for_stmt import ForStmt
 from operations.funcdef_stmt import FuncdefStmt
@@ -50,29 +51,51 @@ script
 
 // lists
 basic_list
+    returns [myObj]
+    @after{
+$myObj = BasicList(tuple([expr.myObj for expr in $exprs]))
+    }
     : LSQPAR (exprs+=expr COMMA)* (exprs+=expr | COMMA)? RSQPAR;
 by_slice_list
-    : expr COLON expr COLON expr
-    | expr COLON expr;
+    returns [myObj]
+    : e1=expr COLON e2=expr COLON e3=expr {$myObj = BySliceList($e1.myObj, $e2.myObj, $e3.myObj)}
+    | e1=expr COLON e2=expr {$myObj = BySliceList($e1.myObj, $e2.myObj)};
 
 // logical expressions
 comparator
-    : LESS
-    | GREATER
-    | DOUBLEEQUAL
-    | LESSEQUAL
-    | GREATEREQUAL
-    | NOTEQUAL;
+    returns [myObj]
+    : LESS {$myObj = Comparator(Comparator.Type.LESS)}
+    | GREATER {$myObj = Comparator(Comparator.Type.GREATER)}
+    | DOUBLEEQUAL {$myObj = Comparator(Comparator.Type.DOUBLEEQUAL)}
+    | LESSEQUAL {$myObj = Comparator(Comparator.Type.LESSEQUAL)}
+    | GREATEREQUAL {$myObj = Comparator(Comparator.Type.GREATEREQUAL)}
+    | NOTEQUAL {$myObj = Comparator(Comparator.Type.NOTEQUAL)};
 or_test
-    : and_test ('or' and_test)?;
+    returns [myObj]
+    @after{
+if $y:
+    $myObj = OrTest($x.myObj, $y[0].myObj)
+else:
+    $myObj = OrTest($x.myObj)
+    }
+    : x=and_test ('or' y+=and_test)?;
 and_test
-    : not_test ('not' not_test)?;
+    returns [myObj]
+    @after{
+if $y:
+    $myObj = OrTest($x.myObj, $y[0].myObj)
+else:
+    $myObj = OrTest($x.myObj)
+    }
+    : x=not_test ('not' y+=not_test)?;
 not_test
-    : ('not' not_test)
-    | comparison;
+    returns [myObj]
+    : ('not' not_test) {$myObj = NotTest.createFromNonTest($not_test.myObj)}
+    | comparison {$myObj = NotTest.createFromComparison($comparison.myObj)};
 comparison
-    : expr comparator expr
-    | expr;
+    returns [myObj]
+    : e1=expr c=comparator e2=expr {$myObj = Comparison.createFromTwoExprs($e1.myObj, $c.myObj, $e2.myObj)}
+    | expr {$myObj = Comparison.createFromExpr($expr.myObj)};
 
 // literal
 number
@@ -86,7 +109,7 @@ simple_literal
     | number {$myObj = SimpleLiteral.createFromNumber($number.myObj)}
     | BOOL {$myObj = SimpleLiteral.createFromBool($BOOL.text)}
     | NONE {$myObj = SimpleLiteral.createFromNone()}
-    | basic_list;
+    | basic_list {$myObj = SimpleLiteral.createFromBasicList($basic_list.myObj)};
 
 // parameter set
 parameter_set_stmt
@@ -100,7 +123,7 @@ simple_lambda
 assignment
     returns [myObj]
     : NAME EQUAL expr {$myObj = Assignment.createFromExpr($NAME.text, $expr.myObj)}
-    | NAME EQUAL by_slice_list;
+    | NAME EQUAL by_slice_list {$myObj = Assignment.createFromBySliceList($NAME.text, $by_slice_list.myObj)};
 assignment_stmt
     returns [myObj]
     : assignment SEMI {$myObj = AssignmentStmt($assignment.myObj)};
@@ -155,7 +178,7 @@ trailer
     | DOT NAME {$myObj = Trailer.createFromDotName($NAME.text)};
 arglist
     returns [myObj]
-    : arg=argument (COMMA args+=argument)* COMMA? {$myObj = Arglist(tuple([$arg.myObj] + [argument.myObj for argument in $args]))};
+    : arg=expr (COMMA args+=expr)* COMMA? {$myObj = Arglist(tuple([$arg.myObj] + [argument.myObj for argument in $args]))};
 argument
     returns [myObj]
     : simple_literal {$myObj = Argument.createFromSimpleLiteral($simple_literal.myObj)}
@@ -163,9 +186,10 @@ argument
 
 // compound statements
 compound_stmt
+    returns [myObj]
     : for_stmt
     | while_stmt
-    | if_stmt;
+    | if_stmt {$myObj = CompoundStmt.createFromIfStmt($if_stmt.myObj)};
 for_stmt
     : 'for' LPAR NAME 'in' expr RPAR LBRACE loop_suite RBRACE;
 while_stmt
@@ -173,9 +197,13 @@ while_stmt
 loop_suite
     : ('init' LBRACE assignment_suite RBRACE)? suite;
 if_stmt
-    : 'if' LPAR or_test RPAR LBRACE suite RBRACE else_stmt?;
+    returns [myObj]
+    : 'if' LPAR or_test RPAR LBRACE suite RBRACE (e+=else_stmt)?
+    {$myObj = IfStmt($or_test.myObj, $suite.myObj, $e[0].myObj if $e else None)};
 else_stmt
-    : 'else' (LBRACE suite RBRACE | if_stmt);
+    returns [myObj]
+    : 'else' LBRACE suite RBRACE {$myObj = ElseStmt.createFromSuite($suite.myObj)}
+    | 'else' if_stmt {$myObj = ElseStmt.createFromIfStmt($if_stmt.myObj)};
 
 // statements
 stmt
@@ -185,8 +213,8 @@ stmt
     | parameter_set_stmt;
 context_stmt
     returns [myObj]
-    : compound_stmt
-    | simple_stmt {$myObj = SimpleStmt.createFromExpr($simple_stmt.myObj)};
+    : compound_stmt {$myObj = ContextStmt.createFromCompoundStmt($compound_stmt.myObj)}
+    | simple_stmt {$myObj = ContextStmt.createFromSimpleStmt($simple_stmt.myObj)};
 simple_stmt
     returns [myObj]
     : import_stmt
@@ -202,7 +230,11 @@ dotted_name
 funcdef_stmt
     : 'def' NAME LPAR arglist RPAR LBRACE suite RBRACE;
 suite
-    : context_stmt*;
+    returns [myObj]
+    @after{
+$myObj = Suite(tuple([c.myObj for c in $ctxs]))
+    }
+    : (ctxs+=context_stmt)*;
 
 // simple tokens
 
