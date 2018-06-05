@@ -5,21 +5,21 @@ from operations.symbol_table import SymbolTable
 
 class CompoundStmt(Operation):
     @classmethod
-    def createFromForStmt(cls, forStmt: ForStmt) -> 'CompoundStmt':
+    def createFromForStmt(cls, forStmt: 'ForStmt') -> 'CompoundStmt':
         obj = cls()
         obj._forStmt = forStmt
 
         return obj
 
     @classmethod
-    def createFromWhileStmt(cls, whileStmt: WhileStmt) -> 'CompoundStmt':
+    def createFromWhileStmt(cls, whileStmt: 'WhileStmt') -> 'CompoundStmt':
         obj = cls()
         obj._whileStmt = whileStmt
 
         return obj
 
     @classmethod
-    def createFromIfStmt(cls, ifStmt: IfStmt) -> 'CompoundStmt':
+    def createFromIfStmt(cls, ifStmt: 'IfStmt') -> 'CompoundStmt':
         obj = cls()
         obj._ifStmt = ifStmt
 

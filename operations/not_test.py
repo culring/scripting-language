@@ -10,7 +10,7 @@ class NotTest(Operation):
         pass
 
     @classmethod
-    def createFromNotTest(cls, notTest: globals()["NotTest"]):
+    def createFromNotTest(cls, notTest: 'NotTest'):
         currNotTest = cls()
         currNotTest._notTest = notTest
         return currNotTest

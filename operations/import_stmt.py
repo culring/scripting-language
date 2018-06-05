@@ -4,7 +4,7 @@ from operations.symbol_table import SymbolTable
 
 
 class ImportStmt(Operation):
-    def __init__(self, dottedName: DottedName):
+    def __init__(self, dottedName: 'DottedName'):
         self._dottedName = dottedName
 
     def execute(self, symbolTables: List[SymbolTable]):

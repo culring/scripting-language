@@ -4,9 +4,9 @@ from antlr4 import *
 from grammar.my_grammarLexer import my_grammarLexer
 import unittest
 import os
-import sys
 
 from grammar.my_grammarParser import my_grammarParser
+from operations.symbol_table import SymbolTable
 
 
 def getValueToNameDict(lexer):
@@ -62,7 +62,7 @@ class LexerTest(unittest.TestCase):
         '''
         expected = [
             'T__10', 'LPAR', 'NAME', 'DOUBLEEQUAL', 'BOOL',
-            'RPAR', 'LBRACE', 'NAME', 'LPAR','STRING',
+            'RPAR', 'LBRACE', 'NAME', 'LPAR', 'STRING',
             'RPAR', 'SEMI', 'RBRACE'
         ]
         symbolicNames = self.getAllSymbolicNames(data)
@@ -70,11 +70,14 @@ class LexerTest(unittest.TestCase):
 
 
 def main():
-    inputStream = FileStream("operations.txt")
+    inputStream = FileStream("test.txt")
     lexer = my_grammarLexer(inputStream)
     stream = CommonTokenStream(lexer)
     parser = my_grammarParser(stream)
-    parser.script()
+
+    scriptCtx = parser.script()
+    scriptMyObj = scriptCtx.myObj
+    scriptMyObj.execute([SymbolTable()])
 
     # if len(sys.argv) <= 1:
     #     unittest.main()

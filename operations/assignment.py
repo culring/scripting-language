@@ -30,4 +30,4 @@ class Assignment(Operation):
         else:
             value = self._bySliceList.execute(symbolTables)
 
-        symbolTables[self._name] = value
+        symbolTables[-1][self._name] = value

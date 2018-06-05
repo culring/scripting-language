@@ -1,5 +1,6 @@
 from typing import List, Tuple
 from operations.operation import Operation
+from operations.parameter_set_suite import ParameterSetSuite
 from operations.symbol_table import SymbolTable
 
 

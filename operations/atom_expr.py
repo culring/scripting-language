@@ -15,4 +15,6 @@ class AtomExpr(Operation):
         value = self._atom.execute(symbolTables)
 
         for trailer in self._trailers:
-            value = trailer.exe
+            value = trailer.execute(symbolTables, value)
+
+        return value

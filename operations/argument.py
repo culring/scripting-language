@@ -1,13 +1,12 @@
 from typing import List, Tuple
 
 from operations.operation import Operation
-from operations.simple_literal import SimpleLiteral
 from operations.symbol_table import SymbolTable
 
 
 class Argument(Operation):
     @classmethod
-    def createFromSimpleLiteral(cls, simpleLiteral: SimpleLiteral) -> 'Argument':
+    def createFromSimpleLiteral(cls, simpleLiteral: 'SimpleLiteral') -> 'Argument':
         obj = cls()
         obj._simpleLiteral = simpleLiteral
 

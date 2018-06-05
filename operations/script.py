@@ -12,3 +12,4 @@ class Script(Operation):
     def execute(self, symbolTables: List[SymbolTable]):
         for stmt in self._stmts:
             stmt.execute(symbolTables)
+            # print(*symbolTables)

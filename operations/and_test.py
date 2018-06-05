@@ -1,5 +1,5 @@
 from typing import List
-from operations.comparison import NotTest
+from operations.not_test import NotTest
 from operations.operation import Operation
 from operations.symbol_table import SymbolTable
 

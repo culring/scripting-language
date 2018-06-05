@@ -1,4 +1,6 @@
 from typing import List, Tuple
+
+from operations.expr import Expr
 from operations.operation import Operation
 from operations.symbol_table import SymbolTable
 

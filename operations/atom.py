@@ -1,8 +1,7 @@
-from typing import List, Tuple
+from typing import List
 from operations.operation import Operation
-from operations.power import Power
 from operations.simple_literal import SimpleLiteral
-from operations.symbol_table import SymbolTable
+from operations.symbol_table import SymbolTable, SymbolNotFoundError
 
 
 class Atom(Operation):
@@ -21,4 +20,14 @@ class Atom(Operation):
         return obj
 
     def execute(self, symbolTables: List[SymbolTable]):
-        pass
+        if hasattr(self, '_simpleLiteral'):
+            return self._simpleLiteral.execute(symbolTables)
+        if hasattr(self, '_name'):
+            try:
+                table = SymbolTable.find(self._name, symbolTables)
+                return table[self._name]
+            except SymbolNotFoundError:
+                if self._name == 'print':
+                    return print
+                else:
+                    raise SymbolNotFoundError

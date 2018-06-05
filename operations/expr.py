@@ -3,7 +3,7 @@ from typing import List, Tuple
 from operations.operation import Operation
 from operations.term import Term
 from operations.symbol_table import SymbolTable
-from .exceptions.unrecognised_token_error import UnrecognisedTokenError
+from operations.exceptions.unrecognised_token_error import UnrecognisedTokenError
 
 
 class Expr(Operation):

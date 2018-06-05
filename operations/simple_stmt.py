@@ -15,7 +15,7 @@ class SimpleStmt(Operation):
         return obj
 
     @classmethod
-    def createFromExpr(cls, expr: Expr) -> 'SimpleStmt':
+    def createFromExpr(cls, expr: 'Expr') -> 'SimpleStmt':
         obj = cls()
         obj._expr = expr
 
@@ -24,7 +24,7 @@ class SimpleStmt(Operation):
     @classmethod
     def createFromAssignmentStmt(cls, assignmentStmt: AssignmentStmt) -> 'SimpleStmt':
         obj = cls()
-        obj._assignmentStmt =assignmentStmt
+        obj._assignmentStmt = assignmentStmt
 
         return obj
 

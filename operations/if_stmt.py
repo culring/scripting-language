@@ -1,5 +1,8 @@
 from typing import List
+
+from operations.else_stmt import ElseStmt
 from operations.operation import Operation
+from operations.or_test import OrTest
 from operations.suite import Suite
 from operations.symbol_table import SymbolTable
 

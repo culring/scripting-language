@@ -46,7 +46,7 @@ from operations.while_stmt import WhileStmt
 // file
 script
     returns [myObj]
-    : stmts+=stmt* {$myObj = Script(tuple($stmts))};
+    : (stmts+=stmt)* {$myObj = Script(tuple([stmt.myObj for stmt in $stmts]))};
 
 // lists
 basic_list
@@ -98,9 +98,12 @@ simple_lambda
 
 // assignment
 assignment
-    : NAME EQUAL (expr | by_slice_list);
+    returns [myObj]
+    : NAME EQUAL expr {$myObj = Assignment.createFromExpr($NAME.text, $expr.myObj)}
+    | NAME EQUAL by_slice_list;
 assignment_stmt
-    : assignment SEMI;
+    returns [myObj]
+    : assignment SEMI {$myObj = AssignmentStmt($assignment.myObj)};
 assignment_suite
     : assignment_stmt*;
 where_assignment
@@ -114,7 +117,7 @@ parameter_set_suite
 expr
     returns [myObj]
     @after {
-$myObj = Term($t.myObj, tuple(zip([operator.text for operator in $operators], [operand.myObj for operand in $operands])))
+$myObj = Expr($t.myObj, tuple(zip([operator.text for operator in $operators], [operand.myObj for operand in $operands])))
     }
     : t=term (operators+=(PLUS | MINUS) operands+=term )*;
 term
@@ -129,7 +132,12 @@ factor
     | power {$myObj = Factor.createFromPower($power.myObj)};
 power
     returns [myObj]
-    : a=atom_expr (DOUBLESTAR factor)? {$myObj = AtomExpr($a.myObj, $factor.myObj)};
+    locals [x]
+    : a=atom_expr (DOUBLESTAR factor {$x = $factor.myObj})?
+{if $x:
+    $myObj = Power($a.myObj, $x)
+else:
+    $myObj = Power($a.myObj)};
 atom_expr
     returns [myObj]
     @after{
@@ -147,7 +155,7 @@ trailer
     | DOT NAME {$myObj = Trailer.createFromDotName($NAME.text)};
 arglist
     returns [myObj]
-    : argument (COMMA args+=argument)* COMMA? {$myObj = Arglist(tuple([argument.myObj for argument in $args]))};
+    : arg=argument (COMMA args+=argument)* COMMA? {$myObj = Arglist(tuple([$arg.myObj] + [argument.myObj for argument in $args]))};
 argument
     returns [myObj]
     : simple_literal {$myObj = Argument.createFromSimpleLiteral($simple_literal.myObj)}
@@ -172,18 +180,18 @@ else_stmt
 // statements
 stmt
     returns [myObj]
-    : context_stmt {myObj = ContextStmt.createFromSimpleStmt($context_stmt.myObj)}
+    : context_stmt {$myObj = ContextStmt.createFromSimpleStmt($context_stmt.myObj)}
     | funcdef_stmt
     | parameter_set_stmt;
 context_stmt
     returns [myObj]
     : compound_stmt
-    | simple_stmt {myObj = SimpleStmt.createFromExpr($simple_stmt.myObj)};
+    | simple_stmt {$myObj = SimpleStmt.createFromExpr($simple_stmt.myObj)};
 simple_stmt
     returns [myObj]
     : import_stmt
-    | expr SEMI {myObj = SimpleStmt.createFromExpr($expr.myObj)}
-    | assignment_stmt;
+    | expr SEMI {$myObj = SimpleStmt.createFromExpr($expr.myObj)}
+    | a=assignment_stmt {$myObj = AssignmentStmt($a.myObj)};
 import_stmt
     : 'import' dotted_name SEMI;
 dotted_name

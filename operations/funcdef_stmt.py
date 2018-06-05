@@ -1,5 +1,8 @@
 from typing import List, Tuple
+
+from operations.arglist import Arglist
 from operations.operation import Operation
+from operations.suite import Suite
 from operations.symbol_table import SymbolTable
 
 

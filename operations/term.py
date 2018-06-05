@@ -1,6 +1,6 @@
 from typing import List, Tuple
 
-from operations.atom_expr import Factor
+from operations.factor import Factor
 from operations.operation import Operation
 from operations.symbol_table import SymbolTable
 
@@ -8,13 +8,13 @@ from .exceptions.unrecognised_token_error import UnrecognisedTokenError
 
 
 class Term(Operation):
-    def __init__(self, term: Factor, operations: Tuple[Tuple[str, Factor], ...] = ()):
-        self._term = term
+    def __init__(self, factor: Factor, operations: Tuple[Tuple[str, Factor], ...] = ()):
+        self._factor = factor
         self._operations = operations
 
     def execute(self, symbolTables: List[SymbolTable]):
-        # (STAR | SLASH | PERCENT | '//')
-        value = self._term.execute(symbolTables)
+        value = self._factor.execute(symbolTables)
+
         for operator, operand in self._operations:
             currValue = operand.execute(symbolTables)
             if operator == '*':
@@ -27,3 +27,5 @@ class Term(Operation):
                 value //= currValue
             else:
                 raise UnrecognisedTokenError()
+
+        return value

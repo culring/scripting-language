@@ -1,5 +1,8 @@
 from typing import List, Tuple
+
+from operations.by_slice_list import BySliceList
 from operations.operation import Operation
+from operations.simple_lambda import SimpleLambda
 from operations.symbol_table import SymbolTable
 
 

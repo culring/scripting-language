@@ -13,6 +13,12 @@ class SymbolTable:
     def __setitem__(self, key, value):
         self._dict[key] = value
 
+    def __contains__(self, item):
+        return item in self._dict
+
+    def __str__(self):
+        return str(self._dict)
+
     @staticmethod
     def find(symbol, tables: List['SymbolTable']):
         for table in tables[::-1]:

@@ -1,5 +1,8 @@
 from typing import List
+
+from operations.loop_suite import LoopSuite
 from operations.operation import Operation
+from operations.or_test import OrTest
 from operations.symbol_table import SymbolTable
 
 
