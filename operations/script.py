@@ -13,8 +13,8 @@ class Script(Operation):
 
     def execute(self, symbolTables: List[SymbolTable]):
         for lineNumber, stmt in enumerate(self._stmts, 1):
-            stmt.execute(symbolTables)
-            # try:
-            #     stmt.execute(symbolTables)
-            # except Exception as e:
-            #     print(f'Semantic error: {e.args[0] if e.args else "Unknown error occurred"}', file=sys.stderr)
+            # stmt.execute(symbolTables)
+            try:
+                stmt.execute(symbolTables)
+            except Exception as e:
+                print(f'Semantic error: {e.args[0] if e.args else "Unknown error occurred"}', file=sys.stderr)

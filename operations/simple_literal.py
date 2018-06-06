@@ -10,7 +10,7 @@ class SimpleLiteral(Operation):
     @classmethod
     def createFromString(cls, string: str) -> 'SimpleLiteral':
         obj = cls()
-        obj._value = string
+        obj._value = string[1:-1]
 
         return obj
 

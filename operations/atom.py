@@ -27,9 +27,7 @@ class Atom(Operation):
                 table = SymbolTable.find(self._name, symbolTables)
                 return table[self._name]
             except SymbolNotFoundError:
-                if self._name == 'print':
-                    return print
-                if self._name == 'range':
-                    return range
+                if self._name in globals()['__builtins__']:
+                    return globals()['__builtins__'][self._name]
                 else:
                     raise SymbolNotFoundError(f"Reference \'{self._name}\' not recognised.")
