@@ -25,6 +25,18 @@ class Trailer:
 
         return obj
 
+    def getDotNameType(self):
+        if not hasattr(self, '_name'):
+            raise TypeError('Trailer is not of type \'dot name\'.')
+        else:
+            return self._name
+
+    def isAccessType(self):
+        return hasattr(self, '_integer')
+
+    def isDotNameType(self):
+        return hasattr(self, '_name')
+
     def execute(self, symbolTables: List[SymbolTable], obj):
         if hasattr(self, '_arglist'):
             if self._arglist:

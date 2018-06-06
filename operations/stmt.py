@@ -29,8 +29,6 @@ class Stmt(Operation):
         return obj
 
     def execute(self, symbolTables: List[SymbolTable]):
-        print("hello stmt!")
-
         if hasattr(self, '_contextStmt'):
             self._contextStmt.execute(symbolTables)
         elif hasattr(self, '_funcdefStmt'):

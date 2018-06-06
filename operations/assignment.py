@@ -30,4 +30,9 @@ class Assignment(Operation):
         else:
             value = self._bySliceList.execute(symbolTables)
 
-        symbolTables[-1][self._name] = value
+        try:
+            table = SymbolTable.find(self._name, symbolTables)
+        except Exception:
+            table = symbolTables[-1]
+
+        table[self._name] = value
