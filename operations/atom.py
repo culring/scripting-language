@@ -29,5 +29,7 @@ class Atom(Operation):
             except SymbolNotFoundError:
                 if self._name == 'print':
                     return print
+                if self._name == 'range':
+                    return range
                 else:
-                    raise SymbolNotFoundError
+                    raise SymbolNotFoundError(f"Reference \'{self._name}\' not recognised.")

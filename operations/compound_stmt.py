@@ -27,7 +27,7 @@ class CompoundStmt(Operation):
 
     def execute(self, symbolTables: List[SymbolTable]):
         if hasattr(self, '_forStmt'):
-            pass
+            self._forStmt.execute(symbolTables)
         elif hasattr(self, '_whileStmt'):
             pass
         elif hasattr(self, '_ifStmt'):

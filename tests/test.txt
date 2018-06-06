@@ -1,4 +1,0 @@
-while(i <= MAX){
-	log("This is a log");
-	i = i+1;
-}

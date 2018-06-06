@@ -16,11 +16,7 @@ class IfStmt(Operation):
     def execute(self, symbolTables: List[SymbolTable]):
         orTestResult = self._orTest.execute(symbolTables)
         if orTestResult:
-            symbolTables.append(SymbolTable())
             self._suite.execute(symbolTables)
-            symbolTables.pop()
         else:
             if self._elseStmt:
-                symbolTables.append(SymbolTable())
                 self._elseStmt.execute(symbolTables)
-                symbolTables.pop()

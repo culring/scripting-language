@@ -13,4 +13,5 @@ class Suite(Operation):
         symbolTables.append(SymbolTable())
         for stmt in self._contextStmt:
             stmt.execute(symbolTables)
+        SymbolTable.merge(symbolTables)
         symbolTables.pop()

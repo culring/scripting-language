@@ -22,6 +22,7 @@ from operations.for_stmt import ForStmt
 from operations.funcdef_stmt import FuncdefStmt
 from operations.if_stmt import IfStmt
 from operations.import_stmt import ImportStmt
+from operations.loop_suite import LoopSuite
 from operations.not_test import NotTest
 from operations.number import Number
 from operations.operation import Operation
@@ -128,7 +129,11 @@ assignment_stmt
     returns [myObj]
     : assignment SEMI {$myObj = AssignmentStmt($assignment.myObj)};
 assignment_suite
-    : assignment_stmt*;
+    returns [myObj]
+    @after{
+$myObj = AssignmentSuite(tuple([stmt.myObj for stmt in $s]))
+    }
+    : (s+=assignment_stmt)*;
 where_assignment
     : NAME EQUAL where_expr;
 where_assignemnt_stmt
@@ -179,23 +184,31 @@ trailer
 arglist
     returns [myObj]
     : arg=expr (COMMA args+=expr)* COMMA? {$myObj = Arglist(tuple([$arg.myObj] + [argument.myObj for argument in $args]))};
-argument
-    returns [myObj]
-    : simple_literal {$myObj = Argument.createFromSimpleLiteral($simple_literal.myObj)}
-    | NAME {$myObj = Argument.createFromName($NAME.text)};
+//argument
+//    returns [myObj]
+//    : simple_literal {$myObj = Argument.createFromSimpleLiteral($simple_literal.myObj)}
+//    | NAME {$myObj = Argument.createFromName($NAME.text)};
 
 // compound statements
 compound_stmt
     returns [myObj]
-    : for_stmt
+    : for_stmt {$myObj = CompoundStmt.createFromForStmt($for_stmt.myObj)}
     | while_stmt
     | if_stmt {$myObj = CompoundStmt.createFromIfStmt($if_stmt.myObj)};
 for_stmt
-    : 'for' LPAR NAME 'in' expr RPAR LBRACE loop_suite RBRACE;
+    returns [myObj]
+    : 'for' LPAR NAME 'in' expr RPAR LBRACE loop_suite RBRACE {$myObj = ForStmt($NAME.text, $expr.myObj, $loop_suite.myObj)};
 while_stmt
     : 'while' LPAR or_test RPAR LBRACE loop_suite RBRACE;
 loop_suite
-    : ('init' LBRACE assignment_suite RBRACE)? suite;
+    returns [myObj]
+    @after{
+if $az:
+    $myObj = LoopSuite(contextStmts=tuple([c.myObj for c in $ctxs]), assignmentSuite=$az[0].myObj)
+else:
+    $myObj = LoopSuite(contextStmts=tuple([c.myObj for c in $ctxs]))
+    }
+    : ('init' LBRACE az+=assignment_suite RBRACE)? (ctxs+=context_stmt)*;
 if_stmt
     returns [myObj]
     : 'if' LPAR or_test RPAR LBRACE suite RBRACE (e+=else_stmt)?

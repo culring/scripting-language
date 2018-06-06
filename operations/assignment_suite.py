@@ -6,8 +6,12 @@ from operations.symbol_table import SymbolTable
 
 
 class AssignmentSuite(Operation):
-    def __init__(self, assignmentStmts: Tuple[AssignmentStmt] = None):
+    def __init__(self, assignmentStmts: Tuple[AssignmentStmt, ...] = ()):
         self._assignmentStmts = assignmentStmts
 
     def execute(self, symbolTables: List[SymbolTable]):
-        pass
+        symbolTable = SymbolTable()
+        for stmt in self._assignmentStmts:
+            stmt.execute([symbolTable])
+
+        return symbolTable

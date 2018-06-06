@@ -26,6 +26,7 @@ from operations.for_stmt import ForStmt
 from operations.funcdef_stmt import FuncdefStmt
 from operations.if_stmt import IfStmt
 from operations.import_stmt import ImportStmt
+from operations.loop_suite import LoopSuite
 from operations.not_test import NotTest
 from operations.number import Number
 from operations.operation import Operation
@@ -291,15 +292,6 @@ class my_grammarListener(ParseTreeListener):
 
     # Exit a parse tree produced by my_grammarParser#arglist.
     def exitArglist(self, ctx:my_grammarParser.ArglistContext):
-        pass
-
-
-    # Enter a parse tree produced by my_grammarParser#argument.
-    def enterArgument(self, ctx:my_grammarParser.ArgumentContext):
-        pass
-
-    # Exit a parse tree produced by my_grammarParser#argument.
-    def exitArgument(self, ctx:my_grammarParser.ArgumentContext):
         pass
 
 

@@ -70,7 +70,7 @@ class LexerTest(unittest.TestCase):
 
 
 def main():
-    inputStream = FileStream("test.txt")
+    inputStream = FileStream("tests/parser/test3.txt")
     lexer = my_grammarLexer(inputStream)
     stream = CommonTokenStream(lexer)
     parser = my_grammarParser(stream)
