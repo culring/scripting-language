@@ -1,0 +1,11 @@
+for(i in range(3)){
+	init{
+		a = 1;
+		b = 1;
+	}
+	print('[' + str(i) + ']:', a, b);
+	c = b;
+	b = b + a;
+	a = c;
+}
+print(a, b);

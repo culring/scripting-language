@@ -1,0 +1,9 @@
+for(name in range(10)){
+	init{
+		x = 1;
+	}
+	x = x+1;
+	print('curr:', x, 
+	'prev:', x.prev[1],
+	'prevOfPrev:', x.prev[2]);
+}
